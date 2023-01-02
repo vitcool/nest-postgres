@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  api:
+    # image: vitcool/nestjs-dockerized
+    build:
+      dockerfile: Dockerfile
+      context: .
+    depends_on:
+      - postgres
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://user:password@postgres:5432/db
+      PORT: 3000
+      POSTGRES_HOST: postgres-db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      POSTGRES_DB: db
+      POSTGRES_PORT: 5432
+    ports:
+      - '8080:3000'
+
+  postgres:
+    image: postgres:10.4
+    restart: always
+    ports:
+      - '35000:5432'
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: nest-pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: vitcool@ukr.net
+      PGADMIN_DEFAULT_PASSWORD: 12345678
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - '8081:80'
+    depends_on:
+      - postgres
